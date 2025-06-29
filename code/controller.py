@@ -18,3 +18,11 @@ def create_subfolder(folderName):
     except FileExistsError:
         pass
         #messagebox.showwarning("Exists", f"Folder '{folderName}' already exists.")
+
+def list_tags():
+    rootFolder = get_dataset_path()
+    try:
+        # Return list of folder names only (tags)
+        return [f for f in os.listdir(rootFolder) if os.path.isdir(os.path.join(rootFolder, f))]
+    except FileNotFoundError:
+        return []
