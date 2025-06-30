@@ -5,6 +5,11 @@ def run(folderName):
     #print(f"Received input: '{folderName}'")
     create_subfolder(folderName) 
 
+def get_tagFolder(tag):
+    folder_root = get_dataset_path()
+    folder_tag = os.path.join(folder_root, tag)
+    return folder_tag
+
 def create_subfolder(folderName):     
     if not folderName:
        # messagebox.showwarning("Input Error", "Please enter a folder name.")
@@ -22,7 +27,19 @@ def create_subfolder(folderName):
 def list_tags():
     rootFolder = get_dataset_path()
     try:
-        # Return list of folder names only (tags)
         return [f for f in os.listdir(rootFolder) if os.path.isdir(os.path.join(rootFolder, f))]
     except FileNotFoundError:
         return []
+    
+def get_images_for_tag(tag):
+    folder_tag = get_tagFolder(tag)
+    if not os.path.isdir(folder_tag):
+        return []
+
+    image_extensions = (".jpg", ".jpeg", ".png", ".bmp", ".gif")
+    images = [
+        os.path.join(folder_tag, f)
+        for f in os.listdir(folder_tag)
+        if f.lower().endswith(image_extensions)
+    ]
+    return images 
