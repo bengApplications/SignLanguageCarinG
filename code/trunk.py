@@ -12,7 +12,3 @@ def read_files():
     print("Dataset path:", path)
 
     files = [os.path.join(path, f) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-    print("Files found:")
-    for file in files:
-        print(file)

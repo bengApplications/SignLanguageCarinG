@@ -65,34 +65,40 @@ def run():
     refresh_tags()
 
     # --- Right side widgets ---
-    # Initialize camera manager
-    cam_manager = CameraManager()
 
-    # Populate dropdown
+    image_label = tk.Label(right_frame)
+    image_label.pack(padx=10, pady=10)
+    
+    # camera
     camera_var = tk.StringVar()
+    camera_dropdown = None  # placeholder
+
+    # Create CameraManager with image_label as preview area
+    cam_manager = CameraManager(image_label)
     camera_names = cam_manager.get_camera_names()
+
     if camera_names:
         camera_var.set(camera_names[0])
+        cam_manager.select_camera(camera_names[0])
+        cam_manager.start_preview()
     else:
         camera_var.set("No camera found")
 
     def on_camera_select(event=None):
         selected = camera_var.get()
-        index = cam_manager.select_camera(selected)
-        messagebox.showinfo("Camera Selected", f"{selected} (Index {index})")
+        cam_manager.stop_preview()
+        cam_manager.select_camera(selected)
+        cam_manager.start_preview()
 
     camera_dropdown = ttk.Combobox(right_frame, textvariable=camera_var, values=camera_names, state="readonly")
     camera_dropdown.pack(padx=10, pady=10)
     camera_dropdown.bind("<<ComboboxSelected>>", on_camera_select)
 
     def on_take_example():
-        messagebox.showinfo("Example", "Take example clicked")
+            messagebox.showinfo("Example", "Take example clicked")
 
     button_example = tk.Button(right_frame, text="Take Example", command=on_take_example)
     button_example.pack(padx=10, pady=10)
-
-    image_label = tk.Label(right_frame)
-    image_label.pack(padx=10, pady=10)
 
     # Keep references to prevent garbage collection
     displayed_image = {"img": None}
