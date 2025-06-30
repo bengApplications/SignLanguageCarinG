@@ -9,7 +9,7 @@ def run():
     root = tk.Tk()
     root.title("first title")
 
-    # Create two main frames
+    # --- Layout ---
     main_frame = tk.Frame(root)
     main_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
@@ -18,6 +18,21 @@ def run():
 
     right_frame = tk.Frame(main_frame)
     right_frame.pack(side=tk.RIGHT, padx=10, pady=10, fill=tk.Y)
+
+    # New frame below main_frame for thumbnails
+    bottom_frame = tk.Frame(root)
+    bottom_frame.pack(padx=10, pady=(0, 10), fill=tk.BOTH, expand=True)
+
+    # Canvas + Scrollbar for thumbnail gallery
+    canvas = tk.Canvas(bottom_frame, height=200)
+    scrollbar = tk.Scrollbar(bottom_frame, orient="horizontal", command=canvas.xview)
+    canvas.configure(xscrollcommand=scrollbar.set)
+
+    scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+    canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    thumbnail_frame = tk.Frame(canvas)
+    canvas.create_window((0, 0), window=thumbnail_frame, anchor="nw")
 
     # --- Left side widgets ---
     label = tk.Label(left_frame, text="first label")
@@ -53,32 +68,75 @@ def run():
     button_example = tk.Button(right_frame, text="Take Example", command=on_take_example)
     button_example.pack(padx=10, pady=10)
 
-    # Image display area
     image_label = tk.Label(right_frame)
     image_label.pack(padx=10, pady=10)
 
-    # Keep reference to the image to prevent garbage collection
+    # Keep references to prevent garbage collection
     displayed_image = {"img": None}
+    thumbnails = []
 
     def on_tag_select(event):
+        nonlocal thumbnails
+        thumbnails.clear()
+
+        for widget in thumbnail_frame.winfo_children():
+            widget.destroy()
+
         if not tag_listbox.curselection():
             return
+
         index = tag_listbox.curselection()[0]
         selected_tag = tag_listbox.get(index)
 
-        images = get_images_for_tag(selected_tag)
-        if images:
+        image_paths = get_images_for_tag(selected_tag)
+        if image_paths:
+            # Show first image large
             try:
-                img = Image.open(images[0])
-                img.thumbnail((200, 200))  # Resize for display
+                img = Image.open(image_paths[0])
+                img.thumbnail((200, 200))
                 photo = ImageTk.PhotoImage(img)
                 image_label.config(image=photo)
                 displayed_image["img"] = photo
             except Exception as e:
                 messagebox.showerror("Error", f"Could not load image: {e}")
+                image_label.config(image='')
+                displayed_image["img"] = None
+
+            # Show all thumbnails
+            for i, path in enumerate(image_paths):
+                try:
+                    thumb_img = Image.open(path)
+                    thumb_img.thumbnail((80, 80))
+                    thumb_photo = ImageTk.PhotoImage(thumb_img)
+
+                    # Define click handler in closure
+                    def on_thumbnail_click(event, p=path):
+                        try:
+                            full_img = Image.open(p)
+                            full_img.thumbnail((200, 200))
+                            full_photo = ImageTk.PhotoImage(full_img)
+                            image_label.config(image=full_photo)
+                            displayed_image["img"] = full_photo
+                        except Exception as e:
+                            messagebox.showerror("Error", f"Could not load image: {e}")
+
+                    lbl = tk.Label(thumbnail_frame, image=thumb_photo, cursor="hand2")
+                    lbl.image = thumb_photo  # keep reference
+                    lbl.grid(row=0, column=i, padx=5, pady=5)
+                    lbl.bind("<Button-1>", on_thumbnail_click)
+
+                    thumbnails.append(thumb_photo)
+                except Exception as e:
+                    print(f"Skipping image {path}: {e}")
+
+
         else:
             image_label.config(image='')
             displayed_image["img"] = None
+
+        # Resize canvas scroll region
+        thumbnail_frame.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
 
     tag_listbox.bind("<<ListboxSelect>>", on_tag_select)
 
