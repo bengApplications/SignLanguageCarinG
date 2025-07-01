@@ -1,4 +1,7 @@
 import os
+import cv2
+from datetime import datetime
+
 from trunk import get_dataset_path
 
 def run(folderName):
@@ -42,4 +45,20 @@ def get_images_for_tag(tag):
         for f in os.listdir(folder_tag)
         if f.lower().endswith(image_extensions)
     ]
-    return images 
+    return images
+
+def save_image(frame, tag):
+    has_image_been_saved = False
+
+    tag_folder = get_tagFolder(tag)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    file_path = os.path.join(tag_folder, f"{timestamp}.jpg")
+
+    # Save image
+    try:
+        cv2.imwrite(file_path, frame)
+        has_image_been_saved = True
+    except Exception as e:
+        pass
+
+    return has_image_been_saved

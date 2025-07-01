@@ -7,6 +7,7 @@ from tkinter import ttk
 
 from controller import run as run_controller
 from controller import list_tags, get_images_for_tag  # You must have this function
+from controller import save_image
 
 def run():
     root = tk.Tk()
@@ -95,9 +96,21 @@ def run():
     camera_dropdown.bind("<<ComboboxSelected>>", on_camera_select)
 
     def on_take_example():
-            messagebox.showinfo("Example", "Take example clicked")
+        # Check if a tag is selected
+        if not tag_listbox.curselection():
+            messagebox.showwarning("No Tag", "Please select a tag first.")
+            return
 
-    button_example = tk.Button(right_frame, text="Take Example", command=on_take_example)
+        # Get selected tag name
+        index = tag_listbox.curselection()[0]
+        selected_tag = tag_listbox.get(index)
+
+        # Capture image from camera
+        frame = cam_manager.capture_image()
+        if save_image(frame, selected_tag):
+            refresh_tags()
+
+    button_example = tk.Button(right_frame, text="Take example pic for tag", command=on_take_example)
     button_example.pack(padx=10, pady=10)
 
     # Keep references to prevent garbage collection

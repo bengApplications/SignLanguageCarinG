@@ -61,3 +61,9 @@ class CameraManager:
         # Schedule next update
         self.label_widget.after(30, self._update_preview)
 
+    def capture_image(self):
+        if not self.cap or not self.cap.isOpened():
+            return None
+        ret, frame = self.cap.read()
+        return frame if ret else None
+    
