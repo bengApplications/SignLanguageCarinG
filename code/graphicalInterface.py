@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 
-from camera import CameraManager
+from camera import Camera
 from tkinter import ttk
 
 from controller import run as run_controller
@@ -53,10 +53,22 @@ def run():
         refresh_tags()
 
     def refresh_tags():
+        # Remember the current selection
+        selected_indices = tag_listbox.curselection()
+        selected_tag = tag_listbox.get(selected_indices[0]) if selected_indices else None
+
+        # Refresh the list
         tag_listbox.delete(0, tk.END)
         tags = list_tags()
         for tag in tags:
             tag_listbox.insert(tk.END, tag)
+
+        # Restore selection if possible
+        if selected_tag in tags:
+            index = tags.index(selected_tag)
+            tag_listbox.selection_set(index)
+            tag_listbox.activate(index)
+            tag_listbox.see(index)
 
     button_tag = tk.Button(left_frame, text="Create Tag", command=onButtonPress_tag)
     button_tag.pack(padx=10, pady=10)
@@ -75,7 +87,7 @@ def run():
     camera_dropdown = None  # placeholder
 
     # Create CameraManager with image_label as preview area
-    cam_manager = CameraManager(image_label)
+    cam_manager = Camera(image_label)
     camera_names = cam_manager.get_camera_names()
 
     if camera_names:
@@ -180,6 +192,12 @@ def run():
         thumbnail_frame.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
 
+
+
     tag_listbox.bind("<<ListboxSelect>>", on_tag_select)
 
     root.mainloop()
+
+
+def cleanup():
+    pass

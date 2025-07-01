@@ -2,7 +2,7 @@
 import cv2
 from PIL import Image, ImageTk
 
-class CameraManager:
+class Camera:
     def __init__(self, label_widget, max_cams=5):
         self.label_widget = label_widget  # Tkinter Label for preview
         self.max_cams = max_cams
@@ -66,4 +66,10 @@ class CameraManager:
             return None
         ret, frame = self.cap.read()
         return frame if ret else None
+    
+    def releaseCamera(self):
+        if self.cap is not None:
+            self.cap.release()
+            self.cap = None
+            print("Camera released.")
     
