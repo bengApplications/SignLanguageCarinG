@@ -55,10 +55,12 @@ class Camera:
             img = Image.fromarray(frame)
             img = img.resize((200, 200))
             imgtk = ImageTk.PhotoImage(image=img)
+
+            # ✅ Keep reference to avoid garbage collection
             self.label_widget.imgtk = imgtk
             self.label_widget.config(image=imgtk)
 
-        # Schedule next update
+        # ✅ Schedule next update
         self.label_widget.after(30, self._update_preview)
 
     def capture_image(self):

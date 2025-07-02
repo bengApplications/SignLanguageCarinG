@@ -9,6 +9,8 @@ from controller import run as run_controller
 from controller import list_tags, get_images_for_tag  # You must have this function
 from controller import save_image
 
+from trunk import train
+
 def run():
     root = tk.Tk()
     root.title("first title")
@@ -23,7 +25,6 @@ def run():
     right_frame = tk.Frame(main_frame)
     right_frame.pack(side=tk.RIGHT, padx=10, pady=10, fill=tk.Y)
 
-    # New frame below main_frame for thumbnails
     bottom_frame = tk.Frame(root)
     bottom_frame.pack(padx=10, pady=(0, 10), fill=tk.BOTH, expand=True)
 
@@ -93,7 +94,6 @@ def run():
     if camera_names:
         camera_var.set(camera_names[0])
         cam_manager.select_camera(camera_names[0])
-        cam_manager.start_preview()
     else:
         camera_var.set("No camera found")
 
@@ -122,8 +122,15 @@ def run():
         if save_image(frame, selected_tag):
             refresh_tags()
 
+    def on_train_tag():
+        train(selected_tag=tag_listbox.get(tag_listbox.curselection()[0]))
+        messagebox.showinfo("Training", "Training started")              
+
     button_example = tk.Button(right_frame, text="Take example pic for tag", command=on_take_example)
     button_example.pack(padx=10, pady=10)
+
+    button_train = tk.Button(right_frame, text="train tag", command=on_train_tag)
+    button_train.pack(padx=10, pady=10)
 
     # Keep references to prevent garbage collection
     displayed_image = {"img": None}
@@ -196,8 +203,10 @@ def run():
 
     tag_listbox.bind("<<ListboxSelect>>", on_tag_select)
 
+    root.after(100, cam_manager.start_preview)   # Start after window is ready
+
     root.mainloop()
 
 
 def cleanup():
-    pass
+    Camera.releaseCamera()
