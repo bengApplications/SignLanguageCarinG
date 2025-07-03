@@ -6,10 +6,10 @@
     "configurations": [
 
         {
-        "name": "Run app.py in /code",
+        "name": "Run app.py",
         "type": "debugpy",
         "request": "launch",
-        "program": "${workspaceFolder}/code/app.py",
+        "program": "${workspaceFolder}/app/app.py",
         "console": "integratedTerminal"
         }
     ]

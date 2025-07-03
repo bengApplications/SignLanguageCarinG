@@ -1,9 +1,16 @@
 
 import tkinter as tk
 
+import cont
+
 def run():
+    #data
+    tags = cont.get_tags()
+    
+    #display
     rootWindow = get_rootWindow()
     frames = get_frames(rootWindow)
+    fill_frames(frames, tags)
     rootWindow.mainloop()
 
 def get_rootWindow():
@@ -32,5 +39,19 @@ def get_frames(rootWindow):
         "verticalFrame_2": verticalFrame_2,
         "verticalFrame_3": verticalFrame_3
     }
+
+def fill_frames(frames, tags):
+    fill_taglist(frames, tags)
+
+def fill_taglist(frames, tags):
+    # Create a vertical scrollbar for the Listbox 
+    scrollbar = tk.Scrollbar(frames["verticalFrame_1"], orient=tk.VERTICAL)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    # Create a Listbox in verticalFrame_1
+    listbox = tk.Listbox(frames["verticalFrame_1"])
+    listbox.pack(fill=tk.BOTH, expand=True)
+
+    for tag in tags:
+        listbox.insert(tk.END, tag)
 
 
