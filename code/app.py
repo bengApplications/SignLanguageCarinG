@@ -1,16 +1,7 @@
-import os
-from trunk import run as run
-
-from camera import Camera
-import graphicalInterface
+from caring import run
 
 def main():
-    try:
-        run()
-        graphicalInterface.run()
-    finally:
-        graphicalInterface.cleanup()
-        print("fertig ohne probleme")
+    run()
 
 if __name__ == "__main__":
     main()
