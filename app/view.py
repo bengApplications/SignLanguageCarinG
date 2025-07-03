@@ -1,16 +1,14 @@
 
 import tkinter as tk
+from tkinter import ttk
 
 import cont
+from camera import Camera
 
 def run():
-    #data
-    tags = cont.get_tags()
-    
-    #display
     rootWindow = get_rootWindow()
     frames = get_frames(rootWindow)
-    fill_frames(frames, tags)
+    fill_frames(frames)
     rootWindow.mainloop()
 
 def get_rootWindow():
@@ -40,10 +38,22 @@ def get_frames(rootWindow):
         "verticalFrame_3": verticalFrame_3
     }
 
-def fill_frames(frames, tags):
-    fill_taglist(frames, tags)
+def fill_frames(frames):
+    fill_taglist(frames)
+    fill_cameraSelection(frames)
 
-def fill_taglist(frames, tags):
+def fill_cameraSelection(frames):
+    camera = Camera()
+    cameras = camera.get_camera_names()
+    camera_asString = tk.StringVar()
+
+    camera_dropdown = ttk.Combobox(frames["verticalFrame_2"], textvariable=camera_asString, values=cameras, state="readonly")
+    camera_dropdown.pack(padx=10, pady=10)
+    camera_dropdown.bind("<<ComboboxSelected>>", on_camera_select)
+
+def fill_taglist(frames):
+    #data
+    tags = cont.get_tags()
     # Create a vertical scrollbar for the Listbox 
     scrollbar = tk.Scrollbar(frames["verticalFrame_1"], orient=tk.VERTICAL)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -54,4 +64,7 @@ def fill_taglist(frames, tags):
     for tag in tags:
         listbox.insert(tk.END, tag)
 
-
+def on_camera_select(event):
+    # Placeholder function for camera selection event
+    selected_camera = event.widget.get()
+    print(f"Camera selected: {selected_camera}")

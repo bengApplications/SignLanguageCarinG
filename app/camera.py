@@ -3,8 +3,7 @@ import cv2
 from PIL import Image, ImageTk
 
 class Camera:
-    def __init__(self, label_widget, max_cams=5):
-        self.label_widget = label_widget  # Tkinter Label for preview
+    def __init__(self, max_cams=99):
         self.max_cams = max_cams
         self.cameras = self._detect_cameras()
         self.selected_index = None
