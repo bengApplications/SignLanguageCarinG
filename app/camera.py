@@ -8,6 +8,7 @@ class Camera:
         self.cameras = self._detect_cameras()
         self.selected_index = None
         self.cap = None
+        self.previewLabel = None
         self.preview_running = False
 
     def _detect_cameras(self):
@@ -34,7 +35,8 @@ class Camera:
     def start_preview(self):
         if self.selected_index is None:
             return
-        self.cap = cv2.VideoCapture(self.selected_index)
+        #self.cap = cv2.VideoCapture(self.selected_index)
+        self.cap = cv2.VideoCapture(self.selected_index, cv2.CAP_DSHOW)
         self.preview_running = True
         self._update_preview()
 
@@ -56,11 +58,11 @@ class Camera:
             imgtk = ImageTk.PhotoImage(image=img)
 
             # ✅ Keep reference to avoid garbage collection
-            self.label_widget.imgtk = imgtk
-            self.label_widget.config(image=imgtk)
+            self.previewLabel.imgtk = imgtk
+            self.previewLabel.config(image=imgtk)
 
         # ✅ Schedule next update
-        self.label_widget.after(30, self._update_preview)
+        self.previewLabel.after(30, self._update_preview)
 
     def capture_image(self):
         if not self.cap or not self.cap.isOpened():
@@ -68,9 +70,15 @@ class Camera:
         ret, frame = self.cap.read()
         return frame if ret else None
     
-    def releaseCamera(self):
+    def release(self):
         if self.cap is not None:
             self.cap.release()
             self.cap = None
             print("Camera released.")
+
+    def set_previewLabel(self, label):
+        self.previewLabel = label
+
+    def __del__(self):
+        print("⚠️ Camera instance was garbage collected.")
     

@@ -81,7 +81,7 @@ def run():
     # --- Right side widgets ---
 
     image_label = tk.Label(right_frame)
-    image_label.pack(padx=10, pady=10)
+    labelimage_.pack(padx=10, pady=10)
     
     # camera
     camera_var = tk.StringVar()
