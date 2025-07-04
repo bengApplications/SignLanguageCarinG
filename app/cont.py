@@ -1,4 +1,5 @@
-import tag 
+import tag
+from trainer import Trainer
 
 class Cont:
     def __init__():
@@ -13,3 +14,7 @@ class Cont:
         if frame is None:
             return False
         return tag.save_image(frame, tag_name)
+    
+    def train(tag):
+        trainer = Trainer()
+        return trainer.train(tag) 

@@ -11,6 +11,7 @@ class View:
         self.shared_listbox = None  # Placeholder for the listbox to be shared across methods
 
         # immidiate initialization
+        cont = Cont
         self.rootWindow = self.create_rootWindow()
         self.camera = Camera()
         self.frames = self.create_frames()
@@ -103,9 +104,13 @@ class View:
     def create_buttons(self):
         buttonFrame_capture = tk.Frame(self.frames["frame_2"])
         buttonFrame_capture.pack(pady=10)
-
-        button_capture = tk.Button(buttonFrame_capture, text="Capture Image", command=lambda: self.on_capture())
+        button_capture = tk.Button(buttonFrame_capture, text="capture Image", command=lambda: self.on_capture())
         button_capture.pack(side=tk.LEFT, padx=5)
+       
+        buttonFrame_train = tk.Frame(self.frames["frame_3"])
+        buttonFrame_train.pack(pady=10)
+        button_train = tk.Button(buttonFrame_capture, text="train tag", command=lambda: self.on_train())
+        button_train.pack(side=tk.LEFT, padx=5)
 
     def on_capture(self):
         selection_tuple = self.shared_listbox.curselection()
@@ -122,3 +127,6 @@ class View:
         if Cont.save_image(frame, selected_tag):
            pass #self.refresh_thumbnails()
         pass
+
+    def on_train(self):
+        tag

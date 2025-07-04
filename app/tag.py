@@ -33,3 +33,4 @@ def save_image(frame, tag):
     except Exception as e:
         print(f"Error saving image: {e}")
         return False
+
