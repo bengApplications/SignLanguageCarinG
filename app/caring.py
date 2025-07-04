@@ -1,8 +1,9 @@
 import os
 
-from view import run as run_view
+from view import View
 
 def run():
-    run_view()
+    view = View()
+    view.run()
 
 
