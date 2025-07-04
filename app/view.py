@@ -2,11 +2,15 @@
 import tkinter as tk
 from tkinter import ttk
 
-import cont
+from cont import Cont
 from camera import Camera
 
 class View:
     def __init__(self):
+        # layzi initialization
+        self.shared_listbox = None  # Placeholder for the listbox to be shared across methods
+
+        # immidiate initialization
         self.rootWindow = self.create_rootWindow()
         self.camera = Camera()
         self.frames = self.create_frames()
@@ -16,7 +20,7 @@ class View:
 
     def run(self):
         self.rootWindow.mainloop()
-        
+
     def on_close(self):
         self.camera.release()
         self.rootWindow.destroy()
@@ -55,16 +59,22 @@ class View:
         self.create_buttons()
 
     def fill_taglist(self):
-        tags = cont.get_tags()
+        print("💡 fill_taglist called")
+        tags = Cont.get_tags()
+        print("Tags:", tags)
     
         scrollbar = tk.Scrollbar(self.frames["frame_1"], orient=tk.VERTICAL)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
-        listbox = tk.Listbox(self.frames["frame_1"])
-        listbox.pack(fill=tk.BOTH, expand=True)
+        self.shared_listbox = tk.Listbox(self.frames["frame_1"])
+        self.shared_listbox.pack(fill=tk.BOTH, expand=True)
 
         for tag in tags:
-            listbox.insert(tk.END, tag)    
+            self.shared_listbox.insert(tk.END, tag) 
+
+        # default
+        if tags:
+            self.shared_listbox.selection_set(0)    
 
     def fill_cameraSelection(self):
         cameras = self.camera.get_camera_names()
@@ -94,20 +104,21 @@ class View:
         buttonFrame_capture = tk.Frame(self.frames["frame_2"])
         buttonFrame_capture.pack(pady=10)
 
-        button_capture = tk.Button(buttonFrame_capture, text="Capture Image", command=lambda: on_capture())
+        button_capture = tk.Button(buttonFrame_capture, text="Capture Image", command=lambda: self.on_capture())
         button_capture.pack(side=tk.LEFT, padx=5)
 
-        def on_capture(self):
-            # if not listbox.curselection():
-            #     messagebox.showwarning("No Tag", "Please select a tag first.")
-            #     return
+    def on_capture(self):
+        selection_tuple = self.shared_listbox.curselection()
+        if not selection_tuple:
+            import tkinter.messagebox as messagebox
+            messagebox.showwarning("No selection", "Please select a tag before capturing.")
+            return
 
-            # # Get selected tag name
-            # index = tag_listbox.curselection()[0]
-            # selected_tag = tag_listbox.get(index)
+        index = selection_tuple[0]       
+        selected_tag = self.shared_listbox.get(index)
 
-            # # Capture image from camera
-            # frame = cam_manager.capture_image()
-            # if save_image(frame, selected_tag):
-            #     refresh_tags()
-            pass
+        # Capture image from camera
+        frame = self.camera.capture_image()
+        if Cont.save_image(frame, selected_tag):
+           pass #self.refresh_thumbnails()
+        pass
