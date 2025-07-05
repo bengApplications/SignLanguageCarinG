@@ -81,4 +81,6 @@ class Camera:
 
     def __del__(self):
         print("⚠️ Camera instance was garbage collected.")
-    
+
+    def provide_capturedFrames(self):
+        return self.cap    

@@ -15,3 +15,6 @@ def getPaths_tags():
 
 def getPath_tag(tag):
     return os.path.join(path_root, getPath_tags(), tag)
+
+def getPath_modelFile(tag):
+    return os.path.join(getPath_tag(tag), f'{tag}_handpose_classifier.pkl')

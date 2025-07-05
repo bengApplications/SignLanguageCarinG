@@ -112,6 +112,11 @@ class View:
         button_train = tk.Button(buttonFrame_capture, text="train tag", command=lambda: self.on_train())
         button_train.pack(side=tk.LEFT, padx=5)
 
+        buttonFrame_detect = tk.Frame(self.frames["frame_3"])
+        buttonFrame_detect.pack(pady=10)
+        button_detect = tk.Button(buttonFrame_capture, text="detect", command=lambda: self.on_detect())
+        button_detect.pack(side=tk.LEFT, padx=5)
+
     def on_capture(self):
         selection_tuple = self.shared_listbox.curselection()
         if not selection_tuple:
@@ -129,5 +134,12 @@ class View:
         pass
 
     def on_train(self):
-        tag = self.shared_listbox.get(self.shared_listbox.curselection())
+        tag = self.get_current_tag(self)
         self.cont.train(tag)
+
+    def on_detect(self):
+        tag = self.get_current_tag()
+        self.cont.detect(tag, self.camera.provide_capturedFrames)
+
+    def get_current_tag(self):
+        return self.shared_listbox.get(self.shared_listbox.curselection()) if self.shared_listbox.curselection() else None  

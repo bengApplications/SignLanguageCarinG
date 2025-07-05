@@ -4,8 +4,9 @@ import cv2
 from PIL import Image
 
 from repository import create_folder
-from pathing import getPaths_tags, getPath_tag
+from pathing import getPaths_tags, getPath_tag, getPath_modelFile
 from trainer import Trainer
+from detector import Detector
 
 def get_tags():
     paths_tags = getPaths_tags()
@@ -37,6 +38,13 @@ def save_image(frame, tag):
 
 def train_tag(tag):
     path_tag = getPath_tag(tag)
-    path_modelFile = os.path.join(path_tag, f'{tag}_handpose_classifier.pkl')
+    path_modelFile = getPath_modelFile
     trainer = Trainer(tag, path_tag, path_modelFile)
     trainer.run()
+
+def detect_tag(tag, capturedFrames):
+    path_tag = getPath_tag(tag)
+    path_modelFile = getPath_modelFile
+    
+    detector = Detector(path_modelFile)
+    detector.run(capturedFrames)
