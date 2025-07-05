@@ -22,7 +22,7 @@ class Trainer:
 
     def run(self):
         self.load_trainingData()
-        self.train()
+        self.trainPose_single()
 
     def extract_landmarks(self, image):
         results = self.hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -51,7 +51,7 @@ class Trainer:
             else:
                 print(f"⚠️ No hand detected in {file}. Skipped.")
 
-    def train(self):
+    def trainPose_multi(self):
 
         X_train, X_test, y_train, y_test = train_test_split(
             self.trainingData, self.trainingData_tags, test_size=0.2, random_state=42
@@ -62,3 +62,8 @@ class Trainer:
         print(classification_report(y_test, y_pred))
         joblib.dump(self.model, self.path_modelFile)
         print(f"Model saved to {self.path_modelFile}")
+
+    def trainPose_single(self):
+        from sklearn.svm import OneClassSVM
+        self.model = OneClassSVM(kernel='rbf', gamma='auto').fit(self.trainingData)
+        joblib.dump(self.model, self.path_modelFile)

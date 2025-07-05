@@ -4,7 +4,7 @@ from view import View
 
 def run():
     is_backend_on = True
-    is_backend_on = False #outcomment this line to run the backend test
+    #is_backend_on = False #outcomment this line to run the backend test
     if is_backend_on:
         run_backendTest()
     else:
