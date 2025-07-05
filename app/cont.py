@@ -1,20 +1,19 @@
-import tag
+import tag as tagManager
 from trainer import Trainer
 
 class Cont:
-    def __init__():
+    def __init__(self):
         pass
 
     @staticmethod
     def get_tags():
-        return tag.get_tags()
+        return tagManager.get_tags()
 
     @staticmethod
     def save_image(frame, tag_name):
         if frame is None:
             return False
-        return tag.save_image(frame, tag_name)
+        return tagManager.save_image(frame, tag_name)
     
-    def train(tag):
-        trainer = Trainer()
-        return trainer.train(tag) 
+    def train(self, tag):
+        tagManager.train_tag(tag) 

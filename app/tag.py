@@ -5,6 +5,7 @@ from PIL import Image
 
 from repository import create_folder
 from pathing import getPaths_tags, getPath_tag
+from trainer import Trainer
 
 def get_tags():
     paths_tags = getPaths_tags()
@@ -34,3 +35,8 @@ def save_image(frame, tag):
         print(f"Error saving image: {e}")
         return False
 
+def train_tag(tag):
+    path_tag = getPath_tag(tag)
+    path_modelFile = os.path.join(path_tag, f'{tag}_handpose_classifier.pkl')
+    trainer = Trainer(tag, path_tag, path_modelFile)
+    trainer.run()

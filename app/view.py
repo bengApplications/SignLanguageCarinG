@@ -11,7 +11,7 @@ class View:
         self.shared_listbox = None  # Placeholder for the listbox to be shared across methods
 
         # immidiate initialization
-        cont = Cont
+        self.cont = Cont()
         self.rootWindow = self.create_rootWindow()
         self.camera = Camera()
         self.frames = self.create_frames()
@@ -129,4 +129,5 @@ class View:
         pass
 
     def on_train(self):
-        tag
+        tag = self.shared_listbox.get(self.shared_listbox.curselection())
+        self.cont.train(tag)
