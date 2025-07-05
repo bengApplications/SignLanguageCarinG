@@ -139,7 +139,7 @@ class View:
 
     def on_detect(self):
         tag = self.get_current_tag()
-        self.cont.detect(tag, self.camera.provide_capturedFrames)
+        self.cont.detect(tag, self.camera.provide_capturedFrames())
 
     def get_current_tag(self):
         return self.shared_listbox.get(self.shared_listbox.curselection()) if self.shared_listbox.curselection() else None  

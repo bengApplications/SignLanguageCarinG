@@ -4,11 +4,11 @@ import mediapipe as mp
 import numpy as np
 
 class Detector:
-    def __init__(self, path_model, cap):
-        self.model = joblib.load(path_model)
+    def __init__(self, path_modelFile, capture):
+        self.model = joblib.load(path_modelFile)
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(static_image_mode=False, max_num_hands=1)
-        self.cap = cap
+        self.capture = capture
 
     def extract_landmarks(self, image):
         results = self.hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -21,7 +21,7 @@ class Detector:
 
     def run(self):
         while True:
-            ret, frame = self.cap.read()
+            ret, frame = self.capture.read()
             if not ret:
                 break
 
@@ -40,5 +40,5 @@ class Detector:
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
-        self.cap.release()
+        self.capture.release()
         cv2.destroyAllWindows()

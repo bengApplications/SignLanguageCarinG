@@ -17,5 +17,5 @@ class Cont:
     def train(self, tag):
         tagManager.train_tag(tag)
 
-    def detect(self, tag, capturedFrames):
-        tagManager.detect_tag(tag, capturedFrames)
+    def detect(self, tag, capture):
+        tagManager.detect_tag(tag, capture)

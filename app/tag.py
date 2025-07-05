@@ -42,9 +42,8 @@ def train_tag(tag):
     trainer = Trainer(tag, path_tag, path_modelFile)
     trainer.run()
 
-def detect_tag(tag, capturedFrames):
-    path_tag = getPath_tag(tag)
-    path_modelFile = getPath_modelFile
+def detect_tag(tag, capture):
+    path_modelFile = getPath_modelFile(tag)
     
-    detector = Detector(path_modelFile)
-    detector.run(capturedFrames)
+    detector = Detector(path_modelFile, capture)
+    detector.run()
