@@ -9,6 +9,7 @@ class View:
     def __init__(self):
         # layzi initialization
         self.shared_listbox = None  # Placeholder for the listbox to be shared across methods
+        self.shared_cameraCanvas = None  
 
         # immidiate initialization
         self.cont = Cont()
@@ -46,17 +47,21 @@ class View:
         frame_3 = tk.Frame(frame_main)
         frame_3.pack(fill=tk.BOTH, expand=True, pady=5)
 
+        frame_4 = tk.Frame(frame_main)
+        frame_4.pack(fill=tk.BOTH, expand=True, pady=5)
+
         return {
             "main": frame_main,
             "frame_1": frame_1,
             "frame_2": frame_2,
-            "frame_3": frame_3
+            "frame_3": frame_3,
+            "frame_4": frame_4
         }
 
     def fill_frames(self):
         self.fill_taglist()
         self.fill_cameraSelection()
-        self.fill_cameraPreview()
+        self.fill_cameraCanvas()
         self.create_buttons()
 
     def fill_taglist(self):
@@ -91,11 +96,11 @@ class View:
             camera_asString.set(cameras[0])
             camera_dropdown.current(0)
 
-    def fill_cameraPreview(self):
-        camera_previewLabel = tk.Label(self.frames["frame_2"], text="Camera Preview")
-        camera_previewLabel.pack(padx=10, pady=10)
-        self.camera.set_previewLabel(camera_previewLabel)
-        camera_previewLabel.after(100, self.camera.start_preview)   
+    def fill_cameraCanvas(self):
+        self.shared_cameraCanvas = tk.Label(self.frames["frame_2"], text="Camera Preview")
+        self.shared_cameraCanvas.pack(padx=10, pady=10)
+        self.camera.set_canvas(self.shared_cameraCanvas)
+        self.shared_cameraCanvas.after(100, self.camera.start_display)   
 
     def on_camera_select(self, event):
         # Placeholder function for camera selection event
@@ -134,12 +139,12 @@ class View:
         pass
 
     def on_train(self):
-        tag = self.get_current_tag(self)
+        tag = self.get_current_tag()
         self.cont.train(tag)
 
     def on_detect(self):
         tag = self.get_current_tag()
-        self.cont.detect(tag, self.camera.provide_capturedFrames())
+        frame_annotated = self.cont.detect(tag, self.camera.provide_capture())
 
     def get_current_tag(self):
         return self.shared_listbox.get(self.shared_listbox.curselection()) if self.shared_listbox.curselection() else None  

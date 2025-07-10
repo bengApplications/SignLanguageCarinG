@@ -8,8 +8,8 @@ class Camera:
         self.cameras = self._detect_cameras()
         self.selected_index = None
         self.cap = None
-        self.previewLabel = None
-        self.preview_running = False
+        self.canvas = None
+        self.is_displaying = False
 
     def _detect_cameras(self):
         available = []
@@ -32,22 +32,19 @@ class Camera:
                 return index
         return None
 
-    def start_preview(self):
-        if self.selected_index is None:
-            return
-        #self.cap = cv2.VideoCapture(self.selected_index)
+    def start_display(self):
         self.cap = cv2.VideoCapture(self.selected_index, cv2.CAP_DSHOW)
-        self.preview_running = True
-        self._update_preview()
+        self.is_displaying = True
+        self.update_display()
 
-    def stop_preview(self):
-        self.preview_running = False
+    def stop_display(self):
+        self.is_displaying = False
         if self.cap:
             self.cap.release()
             self.cap = None
 
-    def _update_preview(self):
-        if not self.preview_running or not self.cap:
+    def update_display(self):
+        if not self.is_displaying or not self.cap:
             return
 
         ret, frame = self.cap.read()
@@ -58,11 +55,10 @@ class Camera:
             imgtk = ImageTk.PhotoImage(image=img)
 
             # ✅ Keep reference to avoid garbage collection
-            self.previewLabel.imgtk = imgtk
-            self.previewLabel.config(image=imgtk)
+            self.canvas.imgtk = imgtk
+            self.canvas.config(image=imgtk)
 
-        # ✅ Schedule next update
-        self.previewLabel.after(30, self._update_preview)
+        self.canvas.after(30, self.update_display)
 
     def capture_image(self):
         if not self.cap or not self.cap.isOpened():
@@ -76,11 +72,11 @@ class Camera:
             self.cap = None
             print("Camera released.")
 
-    def set_previewLabel(self, label):
-        self.previewLabel = label
+    def set_canvas(self, label):
+        self.canvas = label
 
     def __del__(self):
         print("⚠️ Camera instance was garbage collected.")
 
-    def provide_capturedFrames(self):
+    def provide_capture(self):
         return self.cap    

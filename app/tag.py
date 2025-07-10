@@ -46,4 +46,5 @@ def detect_tag(tag, capture):
     path_modelFile = getPath_modelFile(tag)
     
     detector = Detector(path_modelFile, capture)
-    detector.run()
+    capture_annotated = detector.runOnce_returnAnnotatedCapture()
+    return capture_annotated

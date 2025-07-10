@@ -29,16 +29,31 @@ class Detector:
             if landmarks:
                 prediction = self.model.predict([landmarks])[0]  # 1 for in-class, -1 for outlier
 
-                label = "MATCH" if prediction == 1 else "NOT MATCH"
+                label = "MATCH" if prediction == 1 else "NO MATCH"
                 color = (0, 255, 0) if prediction == 1 else (0, 0, 255)
 
                 cv2.putText(frame, label, (10, 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 2)
 
-            cv2.imshow("Pose Recognizer", frame)
+            cv2.imshow("Detector", frame)
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
         self.capture.release()
         cv2.destroyAllWindows()
+
+    def runOnce_returnAnnotatedCapture(self):
+        success, capture = self.capture.read()
+        landmarks = self.extract_landmarks(capture)
+        if landmarks:
+            prediction = self.model.predict([landmarks])[0]
+            label = "MATCH" if prediction == 1 else "NO MATCH"
+            color = (0, 255, 0) if prediction == 1 else (0, 0, 255)
+
+            cv2.putText(
+                capture, label, (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 2
+            )
+
+        return capture

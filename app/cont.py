@@ -18,4 +18,5 @@ class Cont:
         tagManager.train_tag(tag)
 
     def detect(self, tag, capture):
-        tagManager.detect_tag(tag, capture)
+        capture_annotated = tagManager.detect_tag(tag, capture)
+        return capture_annotated
