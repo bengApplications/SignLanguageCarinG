@@ -100,7 +100,7 @@ class View:
         self.shared_cameraCanvas = tk.Label(self.frames["frame_2"], text="Camera Preview")
         self.shared_cameraCanvas.pack(padx=10, pady=10)
         self.camera.set_canvas(self.shared_cameraCanvas)
-        self.shared_cameraCanvas.after(100, self.camera.start_display)   
+        self.shared_cameraCanvas.after(100, self.camera.openCamSession)   
 
     def on_camera_select(self, event):
         # Placeholder function for camera selection event
@@ -121,6 +121,9 @@ class View:
         buttonFrame_detect.pack(pady=10)
         button_detect = tk.Button(buttonFrame_capture, text="detect", command=lambda: self.on_detect())
         button_detect.pack(side=tk.LEFT, padx=5)
+
+    def get_current_tag(self):
+        return self.shared_listbox.get(self.shared_listbox.curselection()) if self.shared_listbox.curselection() else None  
 
     def on_capture(self):
         selection_tuple = self.shared_listbox.curselection()
@@ -146,5 +149,3 @@ class View:
         tag = self.get_current_tag()
         frame_annotated = self.cont.detect(tag, self.camera.provide_capture())
 
-    def get_current_tag(self):
-        return self.shared_listbox.get(self.shared_listbox.curselection()) if self.shared_listbox.curselection() else None  

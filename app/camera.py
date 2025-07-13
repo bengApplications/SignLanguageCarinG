@@ -32,39 +32,32 @@ class Camera:
                 return index
         return None
 
-    def start_display(self):
+    def openCamSession(self):
         self.cap = cv2.VideoCapture(self.selected_index, cv2.CAP_DSHOW)
         self.is_displaying = True
-        self.update_display()
+        self.get_frame()
 
-    def stop_display(self):
+    def closeCamSession(self):
         self.is_displaying = False
         if self.cap:
             self.cap.release()
             self.cap = None
 
-    def update_display(self):
+    def get_frame(self):
         if not self.is_displaying or not self.cap:
-            return
+            return None
 
-        ret, frame = self.cap.read()
-        if ret:
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            img = Image.fromarray(frame)
-            img = img.resize((200, 200))
-            imgtk = ImageTk.PhotoImage(image=img)
-
-            # ✅ Keep reference to avoid garbage collection
-            self.canvas.imgtk = imgtk
-            self.canvas.config(image=imgtk)
-
-        self.canvas.after(30, self.update_display)
+        was_read_succesfull, frame = self.cap.read()
+        if was_read_succesfull:
+            return frame 
+        else: 
+            return None
 
     def capture_image(self):
         if not self.cap or not self.cap.isOpened():
             return None
         ret, frame = self.cap.read()
-        return frame if ret else None
+        return frame if ret else None 
     
     def release(self):
         if self.cap is not None:
