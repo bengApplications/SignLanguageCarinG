@@ -2,7 +2,6 @@ import os
 import cv2
 import numpy
 import mediapipe as mp
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 import joblib
